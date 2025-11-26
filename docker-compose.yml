@@ -11,26 +11,11 @@ services:
     networks:
       - omeka-s-network
     restart: unless-stopped
-  omeka-s-pma:
-    image: phpmyadmin/phpmyadmin:latest
-    ports:
-      - "${PMA_PORT}:80"
-    environment:
-      PMA_HOST: omeka-s-db
-      UPLOAD_LIMIT : 512M
-      # PMA_ABSOLUTE_URI: ${PUBLIC_URL}phpmyadmin/
-    networks:
-      - omeka-s-network
-    restart: unless-stopped
-    depends_on:
-      - omeka-s-db
+
   omeka-s-app:
     build:
       context: omeka-s
       dockerfile: Dockerfile
-      args:
-        - OMEKA_S_VERSION=$OMEKA_S_VERSION
-    image: solarbaypilot/omeka-s
     ports:
       - "${OMEKA_S_PORT}:80"
     volumes:
@@ -46,9 +31,10 @@ services:
     restart: unless-stopped
     depends_on:
       - omeka-s-db
+
 volumes:
   omeka-s-db:
-  # omeka-s:
+
 networks:
   omeka-s-network:
     driver: bridge
