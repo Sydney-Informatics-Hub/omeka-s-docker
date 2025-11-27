@@ -1,30 +1,42 @@
 FROM composer:2.9.2 AS composer
 
-FROM php:8.2-apache
+FROM php:8.2-apache AS main
+
+RUN a2enmod rewrite
+
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions imagick intl pdo_mysql zip
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 ARG OMEKA_DIST_URL=https://github.com/Systemik-Solutions/ngc-omeka
 ARG INSTALL_DIR=/var/www/html
 
-WORKDIR $INSTALL_DIR
-
 RUN apt update
 RUN apt install -y git
 
+RUN mkdir -p $INSTALL_DIR
+
+
 RUN git clone $OMEKA_DIST_URL $INSTALL_DIR
+
+
+WORKDIR $INSTALL_DIR
 
 RUN composer install
 
-COPY config.json $INSTALL_DIR/config.json
+# the install script is run in docker-entrypoint.sh
+# which also sets up the config file
 
+RUN mkdir -p $INSTALL_DIR/config
 
-
-# these bits copied from the other Omeka docker
+COPY config.json $INSTALL_DIR/config/config.json
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
-# Start the Apache service
-CMD ["apache2-foreground"]
+CMD [ "apache2-foreground" ]
 
