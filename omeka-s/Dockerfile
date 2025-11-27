@@ -14,17 +14,8 @@ RUN apt install -y git
 
 RUN git clone $OMEKA_DIST_URL $INSTALL_DIR
 
+COPY config.json $INSTALL_DIR/config.json
 RUN composer install
 
-COPY config.json $INSTALL_DIR/config.json
-
-
-
-# these bits copied from the other Omeka docker
-
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
-
-# Start the Apache service
-CMD ["apache2-foreground"]
+ENTRYPOINT [ "apache2-foreground" ]
 
