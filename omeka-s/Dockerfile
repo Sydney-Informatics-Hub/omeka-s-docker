@@ -15,6 +15,7 @@ ARG INSTALL_DIR=/var/www/html
 
 RUN apt update
 RUN apt install -y git
+RUN apt install -y gettext-base
 
 RUN mkdir -p $INSTALL_DIR
 
@@ -26,12 +27,8 @@ WORKDIR $INSTALL_DIR
 
 RUN composer install
 
-# the install script is run in docker-entrypoint.sh
-# which also sets up the config file
-
 RUN mkdir -p $INSTALL_DIR/config
-
-COPY config.json $INSTALL_DIR/config/config.json
+COPY config.tpl $INSTALL_DIR/config/config.tpl
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
