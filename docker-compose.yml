@@ -13,7 +13,6 @@ services:
       - db_user
       - db_password
       - db_root_password
-
     networks:
       - omeka-s-network
     restart: unless-stopped
@@ -33,13 +32,17 @@ services:
       OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
       OMEKA_ADMIN_USER_FILE: /run/secrets/omeka_admin_user
       MARIADB_DATABASE_FILE: /run/secrets/db_database
-      MARIADB_USER_FILE: /run/secrets/db_database
+      MARIADB_USER_FILE: /run/secrets/db_user
       MARIADB_PASSWORD_FILE: /run/secrets/db_password
       MARIADB_HOST: omeka-s-db
       MARIADB_PORT: 3306
     secrets:
-      - omeka_admin_password
+      - db_database
+      - db_user
       - db_password
+      - omeka_admin_user
+      - omeka_admin_email
+      - omeka_admin_password
     networks:
       - omeka-s-network
     restart: unless-stopped
