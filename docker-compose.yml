@@ -26,7 +26,7 @@ services:
       context: omeka-s
       dockerfile: Dockerfile
     ports:
-      - "${OMEKA_S_PORT}:80"
+      - ${OMEKA_PORT}:80
     environment:
       OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
       OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
@@ -45,6 +45,8 @@ services:
       - omeka_admin_password
     networks:
       - omeka-s-network
+    volumes:
+      - omeka-s-app:/var/www/html
     restart: unless-stopped
     depends_on:
       omeka-s-db:
@@ -68,6 +70,7 @@ secrets:
 
 volumes:
   omeka-s-db:
+  omeka-s-app:
 
 networks:
   omeka-s-network:
