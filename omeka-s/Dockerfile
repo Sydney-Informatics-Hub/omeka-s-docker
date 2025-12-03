@@ -22,7 +22,6 @@ ARG INSTALL_DIR=/var/www/html
 RUN apt update
 RUN apt install -y git
 RUN apt install -y gettext-base
-RUN apt install -y imagemagick
 
 RUN mkdir -p $INSTALL_DIR
 
