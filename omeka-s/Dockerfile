@@ -13,9 +13,9 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 ARG OMEKA_DIST_URL=https://github.com/Systemik-Solutions/ngc-omeka
 ARG INSTALL_DIR=/var/www/html
 
-RUN apt update
-RUN apt install -y git
-RUN apt install -y gettext-base
+RUN apt update \
+    && apt install -y --no-install-recommends \
+       git gettext-base imagemagick
 
 RUN mkdir -p $INSTALL_DIR
 
