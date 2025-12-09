@@ -1,0 +1,15 @@
+
+
+{
+    debug
+    log {
+        output stdout
+        format console
+    }
+}
+
+omeka-s.localhost {
+    reverse_proxy * {$OMEKA_SERVICE}:80
+}
+
+
