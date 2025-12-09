@@ -1,0 +1,5 @@
+omeka-s.localhost {
+    reverse_proxy {$OMEKA_SERVICE}:80
+}
+
+

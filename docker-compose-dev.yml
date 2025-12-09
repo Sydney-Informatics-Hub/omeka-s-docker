@@ -1,8 +1,9 @@
 services:
   caddy:
-    image: caddy:latest
+    build:
+      context: caddy
+      dockerfile: Dockerfile.dev
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile.dev
       - caddy-data:/data
       - caddy-config:/config
     networks:
