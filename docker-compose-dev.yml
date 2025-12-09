@@ -2,7 +2,7 @@ services:
   caddy:
     build:
       context: caddy
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - caddy-data:/data
       - caddy-config:/config
@@ -14,9 +14,7 @@ services:
     depends_on:
       - omeka-s-app
     environment:
-      OMEKA_DOMAIN_NAME: $OMEKA_DOMAIN_NAME
-      OMEKA_TLS_EMAIL: $OMEKA_TLS_EMAIL
-      OMEKA_SERVICE: omeka-s-app
+     OMEKA_SERVICE: omeka-s-app
 
   omeka-s-db:
     image: mariadb:12.2.1-noble-rc
@@ -45,7 +43,7 @@ services:
       context: omeka-s
       dockerfile: Dockerfile
     ports:
-      - ${OMEKA_PORT}:80
+      - 8000:80
     environment:
       OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
       OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password

@@ -1,0 +1,9 @@
+{$OMEKA_DOMAIN_NAME} {
+    reverse_proxy * {$OMEKA_SERVICE}:80
+    tls {
+        on_demand
+        issuer acme {
+            email {$OMEKA_TLS_EMAIL}
+        }
+    }
+}
