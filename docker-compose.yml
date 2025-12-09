@@ -4,7 +4,6 @@ services:
       context: caddy
       dockerfile: Dockerfile
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy-data:/data
       - caddy-config:/config
     networks:
@@ -12,14 +11,14 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    depends-on:
+    depends_on:
       - omeka-s-app
     environment:
       OMEKA_DOMAIN_NAME: $OMEKA_DOMAIN_NAME
       OMEKA_TLS_EMAIL: $OMEKA_TLS_EMAIL
-      OMEKA_SERVER: omeka-s-app
+      OMEKA_SERVICE: omeka-s-app
 
-omeka-s-db:
+  omeka-s-db:
     image: mariadb:12.2.1-noble-rc
     volumes:
       - omeka-s-db:/var/lib/mysql
