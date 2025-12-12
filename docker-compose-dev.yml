@@ -14,7 +14,7 @@ services:
     depends_on:
       - omeka-s-app
     environment:
-     OMEKA_SERVICE: omeka-s-app
+      OMEKA_SERVICE: omeka-s-app
 
   omeka-s-db:
     image: mariadb:12.2.1-noble-rc
@@ -42,8 +42,6 @@ services:
     build:
       context: omeka-s
       dockerfile: Dockerfile
-    ports:
-      - 8000:80
     environment:
       OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
       OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
@@ -70,20 +68,20 @@ services:
         condition: service_healthy
 
 secrets:
-    db_database:
-        environment: DB_DATABASE
-    db_user:
-        environment: DB_USER
-    db_password:
-        environment: DB_PASSWORD
-    db_root_password:
-        environment: DB_ROOT_PASSWORD
-    omeka_admin_user:
-        environment: OMEKA_ADMIN_USER
-    omeka_admin_email:
-        environment: OMEKA_ADMIN_EMAIL
-    omeka_admin_password:
-        environment: OMEKA_ADMIN_PASSWORD
+  db_database:
+    environment: DB_DATABASE
+  db_user:
+    environment: DB_USER
+  db_password:
+    environment: DB_PASSWORD
+  db_root_password:
+    environment: DB_ROOT_PASSWORD
+  omeka_admin_user:
+    environment: OMEKA_ADMIN_USER
+  omeka_admin_email:
+    environment: OMEKA_ADMIN_EMAIL
+  omeka_admin_password:
+    environment: OMEKA_ADMIN_PASSWORD
 
 volumes:
   omeka-s-db:
