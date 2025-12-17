@@ -2,6 +2,9 @@ FROM composer:2.9.2 AS composer
 
 FROM php:8.2-apache AS main
 
+# from the php Docker image docks - uses sed to rewrite  /var/www/html
+# to something else through all of the config files
+
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
@@ -34,7 +37,18 @@ WORKDIR $INSTALL_DIR
 RUN composer install
 
 RUN mkdir -p $INSTALL_DIR/config
+
+#FIX ME - use build secrets to interpolate stuff here
+# but does it even need them ?
+
 COPY config.tpl $INSTALL_DIR/config/config.tpl
+
+COPY config.json $INSTALL_DIR/config/config.json
+
+
+
+RUN php console install -y --code-only
+RUN chown -R www-data:www-data /var/www/html
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
