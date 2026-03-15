@@ -1,20 +1,22 @@
+name: omeka-s
+
 services:
   caddy:
     build:
       context: caddy
       dockerfile: Dockerfile.dev
+    depends_on:
+      - omeka-s-app
     volumes:
       - caddy-data:/data
       - caddy-config:/config
-    networks:
-      - omeka-s-network
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - omeka-s-app
     environment:
       OMEKA_SERVICE: omeka-s-app
+    ports:
+      - '127.0.0.1:80:80'
+      - '127.0.0.1:443:443'
+    networks:
+      - omeka-s-network
 
   omeka-s-db:
     image: mariadb:12.2.1-noble-rc
