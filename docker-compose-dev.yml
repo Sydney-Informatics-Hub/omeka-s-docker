@@ -1,4 +1,4 @@
-name: omeka-s
+name: omeka-s-dev
 
 services:
   caddy:
@@ -44,6 +44,8 @@ services:
       MARIADB_PASSWORD_FILE: /run/secrets/db_password
       MARIADB_HOST: omeka-s-db
       MARIADB_PORT: 3306
+    ports:
+      - '127.0.0.1:80:80'
     networks:
       - omeka-s-network
     restart: unless-stopped
