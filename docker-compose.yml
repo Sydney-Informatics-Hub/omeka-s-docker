@@ -76,7 +76,7 @@ services:
 networks:
   omeka-s-network:
     driver: bridge
-    name: "${COMPOSE_PROJECT_NAME}-omeka-s-network"
+    name: "${COMPOSE_PROJECT_NAME}-network"
 
 volumes:
   omeka-s-db:
@@ -85,19 +85,19 @@ volumes:
   caddy-config:
 
 secrets:
-    db_database:
-        environment: DB_DATABASE
-    db_user:
-        environment: DB_USER
-    db_password:
-        environment: DB_PASSWORD
-    db_root_password:
-        environment: DB_ROOT_PASSWORD
-    omeka_admin_user:
-        environment: OMEKA_ADMIN_USER
-    omeka_admin_email:
-        environment: OMEKA_ADMIN_EMAIL
-    omeka_admin_password:
-        environment: OMEKA_ADMIN_PASSWORD
+  db_database:
+    environment: DB_DATABASE
+  db_user:
+    environment: DB_USER
+  db_password:
+    environment: DB_PASSWORD
+  db_root_password:
+    environment: DB_ROOT_PASSWORD
+  omeka_admin_user:
+    environment: OMEKA_ADMIN_USER
+  omeka_admin_email:
+    environment: OMEKA_ADMIN_EMAIL
+  omeka_admin_password:
+    environment: OMEKA_ADMIN_PASSWORD
 
 
