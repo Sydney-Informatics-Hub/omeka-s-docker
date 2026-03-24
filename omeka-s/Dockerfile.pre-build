@@ -1,3 +1,8 @@
+# Note: This dockerfile is for pre-building the image, which needs
+# a running database to install resource templates and create 
+# an admin user
+
+
 FROM composer:2.9.2 AS composer
 
 FROM php:8.2-apache AS main
@@ -47,11 +52,10 @@ COPY config.json $INSTALL_DIR/config/config.json
 
 # installs modules
 
-RUN php console install -y --code-only
-
+RUN php console install -y 
 RUN chown -R www-data:www-data /var/www/html
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY docker-entrypoint-pre-build.sh /docker-entrypoint.sh
 
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
