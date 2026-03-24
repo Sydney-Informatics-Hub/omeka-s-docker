@@ -45,7 +45,7 @@ services:
       MARIADB_HOST: omeka-s-db
       MARIADB_PORT: 3306
     ports:
-      - '127.0.0.1:80:80'
+      - '127.0.0.1:8080:80'
     networks:
       - omeka-s-network
     restart: unless-stopped

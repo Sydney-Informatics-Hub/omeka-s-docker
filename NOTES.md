@@ -27,3 +27,17 @@ the database.
 This is ok for the resource templates, but I'm not sure about the
 initial user
 
+
+## Catching up in March
+
+I think I need a two-pass build:
+
+1. docker compose with a special entrypoint that
+   - does the full PHP install
+   - dumps out the database
+
+2. docker build which injects the database dump and installs modules
+
+The admin user details should be done the right way with a secret.
+For now I'm going to concentrate on getting the 1/2 right with a
+pre-baked admin user
