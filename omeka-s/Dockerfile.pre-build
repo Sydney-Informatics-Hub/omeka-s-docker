@@ -29,7 +29,7 @@ ARG INSTALL_DIR=/var/www/html
 
 RUN apt update \
     && apt install -y --no-install-recommends \
-       git gettext-base imagemagick
+       git gettext-base imagemagick mariadb-client
 
 RUN mkdir -p $INSTALL_DIR
 
@@ -52,8 +52,8 @@ COPY config.json $INSTALL_DIR/config/config.json
 
 # installs modules
 
-RUN php console install -y 
-RUN chown -R www-data:www-data /var/www/html
+#RUN php console install -y 
+#RUN chown -R www-data:www-data /var/www/html
 
 COPY docker-entrypoint-pre-build.sh /docker-entrypoint.sh
 

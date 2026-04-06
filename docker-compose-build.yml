@@ -1,0 +1,100 @@
+name: omeka-s-dev
+
+services:
+  caddy:
+    build:
+      context: caddy
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - omeka-s-app
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      OMEKA_SERVICE: omeka-s-app
+    ports:
+      - '127.0.0.1:80:80'
+      - '127.0.0.1:443:443'
+    networks:
+      - omeka-s-network
+
+
+  omeka-s-app:
+    build:
+      context: omeka-s
+      dockerfile: Dockerfile.pre-build
+    depends_on:
+      omeka-s-db:
+        condition: service_healthy
+    volumes:
+      - omeka-s-app:/var/www/html
+    secrets:
+      - db_database
+      - db_user
+      - db_password
+      - omeka_admin_user
+      - omeka_admin_email
+      - omeka_admin_password
+    environment:
+      OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
+      OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
+      OMEKA_ADMIN_USER_FILE: /run/secrets/omeka_admin_user
+      MARIADB_DATABASE_FILE: /run/secrets/db_database
+      MARIADB_USER_FILE: /run/secrets/db_user
+      MARIADB_PASSWORD_FILE: /run/secrets/db_password
+      MARIADB_HOST: omeka-s-db
+      MARIADB_PORT: 3306
+    ports:
+      - '127.0.0.1:8080:80'
+    networks:
+      - omeka-s-network
+    restart: unless-stopped
+
+  omeka-s-db:
+    image: mariadb:12.2.1-noble-rc
+    volumes:
+      - omeka-s-db:/var/lib/mysql
+    secrets:
+      - db_database
+      - db_user
+      - db_password
+      - db_root_password
+    environment:
+      MARIADB_DATABASE_FILE: /run/secrets/db_database
+      MARIADB_USER_FILE: /run/secrets/db_user
+      MARIADB_PASSWORD_FILE: /run/secrets/db_password
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    networks:
+      - omeka-s-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 10
+
+networks:
+  omeka-s-network:
+    driver: bridge
+    name: "${COMPOSE_PROJECT_NAME}-network"
+
+volumes:
+  omeka-s-db:
+  omeka-s-app:
+  caddy-data:
+  caddy-config:
+
+secrets:
+  db_database:
+    environment: DB_DATABASE
+  db_user:
+    environment: DB_USER
+  db_password:
+    environment: DB_PASSWORD
+  db_root_password:
+    environment: DB_ROOT_PASSWORD
+  omeka_admin_user:
+    environment: OMEKA_ADMIN_USER
+  omeka_admin_email:
+    environment: OMEKA_ADMIN_EMAIL
+  omeka_admin_password:
+    environment: OMEKA_ADMIN_PASSWORD

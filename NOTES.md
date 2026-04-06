@@ -41,3 +41,35 @@ I think I need a two-pass build:
 The admin user details should be done the right way with a secret.
 For now I'm going to concentrate on getting the 1/2 right with a
 pre-baked admin user
+
+ChatGPT suggests the following:
+
+services:
+  init:
+    build: .
+    depends_on:
+      - db
+    command: >
+      sh -c "
+        ./wait-for-db.sh &&
+        php application/scripts/install.php &&
+        touch /done
+      "
+
+##
+
+What has to happen at build time:
+
+- install Omeka S
+- run database and Omeka
+- set up a build-time admin user
+- Install modules and templates
+- dump database SQL
+- push image to registry
+
+What has to happen at init
+
+- pull image
+- init with database SQL
+- inject new password for admin user (before or after SQL init)?
+- spin up image
