@@ -16,7 +16,7 @@ RUN install-php-extensions imagick intl pdo_mysql zip
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 ARG OMEKA_DIST_URL=https://github.com/Sydney-Informatics-Hub/ngc-omeka
-ARG OMEKA_DIST_BRANCH=feature-single-sign-on
+ARG OMEKA_DIST_BRANCH=rc-sih-0.1.2
 ARG INSTALL_DIR=/var/www/html
 
 RUN apt update \
