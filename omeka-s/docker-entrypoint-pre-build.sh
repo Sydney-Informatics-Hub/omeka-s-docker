@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# This is the pre-build entrypoint which installs modules and
+# resource templates
+
 set -ex
 
 cd /var/www/html
@@ -18,7 +22,5 @@ if [ ! -d /var/www/html/public ]; then
 	php console install -y
 	chown -R www-data:www-data /var/www/html
 fi
-
-
 
 exec "$@"

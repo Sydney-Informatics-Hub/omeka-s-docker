@@ -53,7 +53,7 @@ RUN $INSTALL_DIR/docker-build.sh
 
 # delete the build script?
 
-FROM php:8.2-apache AS builder
+FROM php:8.2-apache AS main
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
