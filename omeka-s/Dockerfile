@@ -1,6 +1,6 @@
 FROM composer:2.9.2 AS composer
 
-FROM php:8.2-apache AS main
+FROM php:8.2-apache AS builder
 
 # from the php Docker image docks - uses sed to rewrite  /var/www/html
 # to something else through all of the config files
@@ -31,7 +31,6 @@ RUN mkdir -p $INSTALL_DIR
 
 RUN git clone -b $OMEKA_DIST_BRANCH $OMEKA_DIST_URL $INSTALL_DIR
 
-
 WORKDIR $INSTALL_DIR
 
 RUN composer install
@@ -45,11 +44,16 @@ COPY config.tpl $INSTALL_DIR/config/config.tpl
 
 COPY config.json $INSTALL_DIR/config/config.json
 
-# installs modules
+# the entrypoint which installs the modules 
 
-RUN php console install -y --code-only
+COPY docker-build.sh $INSTALL_DIR/docker-build.sh
 
-RUN chown -R www-data:www-data /var/www/html
+RUN chmod +x $INSTALL_DIR/docker-build.sh
+RUN $INSTALL_DIR/docker-build.sh
+
+# delete the build script?
+
+FROM php:8.2-apache AS builder
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
