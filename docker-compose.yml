@@ -24,6 +24,7 @@ services:
     build:
       context: omeka-s
       dockerfile: Dockerfile
+      target: main
     depends_on:
       omeka-s-db:
         condition: service_healthy

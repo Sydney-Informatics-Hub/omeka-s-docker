@@ -7,6 +7,7 @@ services:
       context: omeka-s
       target: builder
       dockerfile: Dockerfile
+    command: /build-entrypoint.sh
     depends_on:
       omeka-s-db:
         condition: service_healthy
@@ -33,7 +34,6 @@ services:
       - '127.0.0.1:8080:80'
     networks:
       - omeka-s-network
-    restart: unless-stopped
 
   omeka-s-db:
     image: mariadb:12.2.1-noble-rc

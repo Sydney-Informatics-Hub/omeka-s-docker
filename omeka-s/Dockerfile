@@ -44,21 +44,20 @@ COPY config.tpl $INSTALL_DIR/config/config.tpl
 
 COPY config.json $INSTALL_DIR/config/config.json
 
-# the entrypoint which installs the modules 
+# build-entrypoint does the install which requires the server
+# and db to be running (modules and resource templates)
+# entrypoint is configured in the docker-compose-build.yml 
 
-COPY docker-build.sh $INSTALL_DIR/docker-build.sh
+COPY build-entrypoint.sh /build-entrypoint.sh
 
-RUN chmod +x $INSTALL_DIR/docker-build.sh
-RUN $INSTALL_DIR/docker-build.sh
+RUN chmod +x /build-entrypoint.sh
 
-# delete the build script?
 
 FROM php:8.2-apache AS main
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+# copies the Omeka S installation from the build stage t 
+# this one
 
-RUN chmod +x /docker-entrypoint.sh
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+COPY --from=build $INSTALL_DIR $INSTALL_DIR
 
-CMD [ "apache2-foreground" ]
-
+# using the php-apache default entrypoint
