@@ -3,13 +3,10 @@
 # This is the pre-build entrypoint which installs modules and
 # resource templates
 
-set -ex
+set -ex pipefail
 
 cd /var/www/html
 
-# transfer Docker secrets to environment
-echo "database env"
-echo $MARIADB_DATABASE
 
 export MARIADB_DATABASE=$(</run/secrets/db_database)
 export MARIADB_USER=$(</run/secrets/db_user)
@@ -23,4 +20,7 @@ envsubst < /var/www/html/config/config.tpl > /var/www/html/config/config.json
 php console install -y
 chown -R www-data:www-data /var/www/html
 
+# dump the database so that it can be picked up by the prod docker
+
+mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /output/init-db.sql
 

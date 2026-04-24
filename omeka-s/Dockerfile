@@ -24,7 +24,7 @@ ARG INSTALL_DIR=/var/www/html
 
 RUN apt update \
     && apt install -y --no-install-recommends \
-       git gettext-base imagemagick
+       git gettext-base imagemagick mariadb-client
 
 RUN mkdir -p $INSTALL_DIR
 
