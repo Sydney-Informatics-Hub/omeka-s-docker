@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+docker compose -f docker-compose-build.yml up \
+	--build \
+	--abort-on-container-exit
+

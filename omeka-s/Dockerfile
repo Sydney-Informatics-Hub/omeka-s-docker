@@ -46,18 +46,22 @@ COPY config.json $INSTALL_DIR/config/config.json
 
 # build-entrypoint does the install which requires the server
 # and db to be running (modules and resource templates)
-# entrypoint is configured in the docker-compose-build.yml 
+# entrypoint is configured in the docker-compose-build.yml
 
 COPY build-entrypoint.sh /build-entrypoint.sh
 
 RUN chmod +x /build-entrypoint.sh
 
+# note to my future self - make this run the container and check
+# where docker-entrypoint is coming from
 
 FROM php:8.2-apache AS main
 
-# copies the Omeka S installation from the build stage t 
+# copies the Omeka S installation from the build stage to
 # this one
 
 COPY --from=build $INSTALL_DIR $INSTALL_DIR
 
-# using the php-apache default entrypoint
+
+
+
