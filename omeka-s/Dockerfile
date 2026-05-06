@@ -60,7 +60,7 @@ FROM php:8.2-apache AS main
 # copies the Omeka S installation from the build stage to
 # this one
 
-COPY --from=build $INSTALL_DIR $INSTALL_DIR
+COPY --from=builder /var/www/html/ /var/www/html
 
 
 

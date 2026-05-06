@@ -17,10 +17,13 @@ export OMEKA_ADMIN_PASSWORD=$(</run/secrets/omeka_admin_password)
 
 envsubst < /var/www/html/config/config.tpl > /var/www/html/config/config.json
 
+echo "test to see if this is being run"
+
 php console install -y
 chown -R www-data:www-data /var/www/html
 
 # dump the database so that it can be picked up by the prod docker
 
 mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /output/init-db.sql
+
 
