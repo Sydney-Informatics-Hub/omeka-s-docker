@@ -26,4 +26,3 @@ chown -R www-data:www-data /var/www/html
 
 mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /output/init-db.sql
 
-
