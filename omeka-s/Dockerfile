@@ -1,9 +1,6 @@
 FROM composer:2.9.2 AS composer
 
-FROM php:8.2-apache AS builder
-
-# from the php Docker image docs - uses sed to rewrite  /var/www/html
-# to something else through all of the config files
+FROM php:8.2-apache AS omeka-s-deps
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
@@ -14,6 +11,8 @@ RUN a2enmod rewrite
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN install-php-extensions imagick intl pdo_mysql zip
+
+FROM omeka-s-deps AS builder
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
@@ -53,21 +52,13 @@ RUN chmod +x /build-entrypoint.sh
 
 CMD [ "apache-foreground" ]
 
-# note to my future self - make this run the container and check
-# where docker-entrypoint is coming from
+FROM omeka-s-deps AS main
 
-FROM php:8.2-apache AS main
+# this is copied from the context, as it contains a bunch of
+# things like modules which were created at run time by
+# build_entrypoint.sh
 
-# copies the Omeka S installation from the build stage to
-# this one
+COPY php-init /var/www/html
 
-COPY --from=builder /var/www/html/ /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-
 

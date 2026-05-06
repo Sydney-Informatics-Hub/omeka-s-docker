@@ -20,9 +20,12 @@ envsubst < /var/www/html/config/config.tpl > /var/www/html/config/config.json
 echo "test to see if this is being run"
 
 php console install -y
-chown -R www-data:www-data /var/www/html
 
 # dump the database so that it can be picked up by the prod docker
 
-mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /output/init-db.sql
+mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /db-init/init-db.sql
+
+# copy the complete /var/www/html so that it can also be included in the prod docker
+
+cp -r /var/www/html/* /php-init/
 

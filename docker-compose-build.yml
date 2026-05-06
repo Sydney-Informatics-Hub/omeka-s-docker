@@ -13,7 +13,8 @@ services:
         condition: service_healthy
     volumes:
       - omeka-s-app:/var/www/html
-      - ./db-init:/output
+      - ./db-init:/db-init
+      - ./omeka-s/assets/php-init:/php-init
     secrets:
       - db_database
       - db_user
