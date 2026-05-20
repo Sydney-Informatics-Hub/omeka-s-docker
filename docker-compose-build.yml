@@ -1,34 +1,20 @@
-name: omeka-s-dev
+name: omeka-s-build
 
 services:
-  caddy:
-    build:
-      context: caddy
-      dockerfile: Dockerfile.dev
-    depends_on:
-      - omeka-s-app
-    volumes:
-      - caddy-data:/data
-      - caddy-config:/config
-    environment:
-      OMEKA_SERVICE: omeka-s-app
-    ports:
-      - '127.0.0.1:80:80'
-      - '127.0.0.1:443:443'
-    networks:
-      - omeka-s-network
 
-
-  omeka-s-app:
+  omeka-s-app-build:
     build:
       context: omeka-s
+      target: builder
       dockerfile: Dockerfile
-      target: main
+    command: /build-entrypoint.sh
     depends_on:
       omeka-s-db:
         condition: service_healthy
     volumes:
       - omeka-s-app:/var/www/html
+      - ./db-init:/db-init
+      - ./omeka-s/assets/php-init:/php-init
     secrets:
       - db_database
       - db_user
@@ -49,13 +35,11 @@ services:
       - '127.0.0.1:8080:80'
     networks:
       - omeka-s-network
-    restart: unless-stopped
 
   omeka-s-db:
     image: mariadb:12.2.1-noble-rc
     volumes:
       - omeka-s-db:/var/lib/mysql
-      - ./db-init:/docker-entrypoint-initdb.d
     secrets:
       - db_database
       - db_user
@@ -82,8 +66,6 @@ networks:
 volumes:
   omeka-s-db:
   omeka-s-app:
-  caddy-data:
-  caddy-config:
 
 secrets:
   db_database:

@@ -1,6 +1,6 @@
 # NOTES
 
-Crap first version:
+First version:
 
 Run the install script as part of the docker-entrypoint, because it
 needs the database container to be running.
@@ -8,3 +8,68 @@ needs the database container to be running.
 Later we need a better way to do this which lets us build a complete
 Omeka stack image which can then connect to and optionally set up the
 database
+
+## Isolated Sites
+
+I can install this but site editor users get a 403 error when trying
+to add items.
+
+## Catching up in January
+
+The docker branch installs modules at build time rather than via
+the docker_entrypoint.sh but doesn't create an initial user or
+add the resource templates.
+
+The right way to do this is with a /docker-entrypoint-initdb.d bind mount
+with an SQL file which the mariadb container will use to initialise
+the database.
+
+This is ok for the resource templates, but I'm not sure about the
+initial user
+
+
+## Catching up in March
+
+I think I need a two-pass build:
+
+1. docker compose with a special entrypoint that
+   - does the full PHP install
+   - dumps out the database
+
+2. docker build which injects the database dump and installs modules
+
+The admin user details should be done the right way with a secret.
+For now I'm going to concentrate on getting the 1/2 right with a
+pre-baked admin user
+
+ChatGPT suggests the following:
+
+services:
+  init:
+    build: .
+    depends_on:
+      - db
+    command: >
+      sh -c "
+        ./wait-for-db.sh &&
+        php application/scripts/install.php &&
+        touch /done
+      "
+
+##
+
+What has to happen at build time:
+
+- install Omeka S
+- run database and Omeka
+- set up a build-time admin user
+- Install modules and templates
+- dump database SQL
+- push image to registry
+
+What has to happen at init
+
+- pull image
+- init with database SQL
+- inject new password for admin user (before or after SQL init)?
+- spin up image
