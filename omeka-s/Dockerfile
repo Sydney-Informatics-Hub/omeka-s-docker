@@ -10,6 +10,8 @@ RUN a2enmod rewrite
 
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
+RUN apt update && apt install -y --no-install-recommends imagemagick
+
 RUN install-php-extensions imagick intl pdo_mysql zip
 
 FROM omeka-s-deps AS builder
@@ -20,12 +22,10 @@ ARG OMEKA_DIST_URL=https://github.com/Sydney-Informatics-Hub/ngc-omeka
 ARG OMEKA_DIST_BRANCH=feature-single-sign-on
 ARG INSTALL_DIR=/var/www/html
 
-RUN apt update \
-    && apt install -y --no-install-recommends \
-       git gettext-base imagemagick mariadb-client
+RUN apt update && apt install -y --no-install-recommends \
+    git gettext-base mariadb-client
 
 RUN mkdir -p $INSTALL_DIR
-
 
 RUN git clone -b $OMEKA_DIST_BRANCH $OMEKA_DIST_URL $INSTALL_DIR
 
