@@ -14,7 +14,7 @@ services:
     volumes:
       - omeka-s-app:/var/www/html
       - ./db-init:/db-init
-      - ./omeka-s/assets/php-init:/php-init
+      - ./omeka-s/php-init:/php-init
     secrets:
       - db_database
       - db_user
