@@ -1,5 +1,6 @@
 # NOTES
 
+
 First version:
 
 Run the install script as part of the docker-entrypoint, because it
@@ -73,3 +74,4 @@ What has to happen at init
 - init with database SQL
 - inject new password for admin user (before or after SQL init)?
 - spin up image
+
