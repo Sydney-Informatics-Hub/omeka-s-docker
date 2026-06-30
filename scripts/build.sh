@@ -3,11 +3,15 @@
 set -euo pipefail
 
 
-# clean up
+# clean up any old build images...
 docker compose -f docker-compose-build.yml down \
 	--volumes
 
+# ...and any old php assets
+
+
+
 docker compose -f docker-compose-build.yml up \
 	--build \
-	--abort-on-container-exit
+	--abort-on-container-exit \
 

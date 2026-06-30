@@ -12,17 +12,25 @@ ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/relea
 
 RUN install-php-extensions imagick intl pdo_mysql zip
 
+#RUN git clone https://github.com/Imagick/imagick /tmp/imagick \
+#    && cd /tmp/imagick \
+#    && phpize && ./configure \
+#    && make \
+#    && make install
+
 FROM omeka-s-deps AS builder
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-ARG OMEKA_DIST_URL=https://github.com/Sydney-Informatics-Hub/ngc-omeka
-ARG OMEKA_DIST_BRANCH=feature-single-sign-on
-ARG INSTALL_DIR=/var/www/html
-
 RUN apt update \
     && apt install -y --no-install-recommends \
-       git gettext-base imagemagick mariadb-client
+       git gettext-base mariadb-client
+
+
+ARG OMEKA_DIST_URL=https://github.com/Sydney-Informatics-Hub/ngc-omeka
+ARG OMEKA_DIST_BRANCH=rc-sih-0.1.2
+ARG INSTALL_DIR=/var/www/html
+
 
 RUN mkdir -p $INSTALL_DIR
 
@@ -58,7 +66,7 @@ FROM omeka-s-deps AS main
 # things like modules which were created at run time by
 # build_entrypoint.sh
 
-COPY php-init /var/www/html
+COPY assets/php-init /var/www/html
 
 RUN chown -R www-data:www-data /var/www/html
 

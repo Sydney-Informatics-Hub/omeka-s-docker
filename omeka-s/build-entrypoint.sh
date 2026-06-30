@@ -17,7 +17,6 @@ export OMEKA_ADMIN_PASSWORD=$(</run/secrets/omeka_admin_password)
 
 envsubst < /var/www/html/config/config.tpl > /var/www/html/config/config.json
 
-echo "test to see if this is being run"
 
 php console install -y
 
@@ -25,7 +24,10 @@ php console install -y
 
 mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /db-init/init-db.sql
 
-# copy the complete /var/www/html so that it can also be included in the prod docker
+# copy the complete /var/www/html so that it can also be included
+# in the production docker, cleaning out /php-init/ first
+
+rm -rf /php-init/*
 
 cp -r /var/www/html/* /php-init/
 
