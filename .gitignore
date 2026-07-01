@@ -1,3 +1,4 @@
 .env
 omeka-s/assets/
 db-init/
+secrets/

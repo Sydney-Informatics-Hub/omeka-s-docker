@@ -7,6 +7,7 @@ set -ex pipefail
 
 cd /var/www/html
 
+# these are the values at build time - this also happens in the runtime entrypoint
 
 export MARIADB_DATABASE=$(</run/secrets/db_database)
 export MARIADB_USER=$(</run/secrets/db_user)

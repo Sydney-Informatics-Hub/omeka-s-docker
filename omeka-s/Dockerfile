@@ -37,11 +37,7 @@ RUN composer install
 
 RUN mkdir -p $INSTALL_DIR/config
 
-#FIX ME - use build secrets to interpolate stuff here
-# but does it even need them ?
-
 COPY config.tpl $INSTALL_DIR/config/config.tpl
-
 COPY config.json $INSTALL_DIR/config/config.json
 
 # build-entrypoint does the install which requires the server
@@ -62,6 +58,10 @@ FROM omeka-s-deps AS main
 
 COPY assets/php-init /var/www/html
 
-RUN chown -R www-data:www-data /var/www/html
+# this is so that we can inject the database password at
+# deployment - see the docker-compose.yml 
 
+COPY database.ini.tpl /var/www/html/public/config/database.ini.tpl
+
+RUN chown -R www-data:www-data /var/www/html
 
