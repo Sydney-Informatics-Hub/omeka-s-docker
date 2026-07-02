@@ -34,8 +34,7 @@ services:
       - omeka_admin_user
       - omeka_admin_email
       - omeka_admin_password
-      - omeka_admin_temp_email
-    command: /docker-entrypoint.sh
+      - omeka_build_admin_email
     environment:
       MARIADB_DATABASE: omekas
       MARIADB_USER: omekas
@@ -45,11 +44,12 @@ services:
       OMEKA_ADMIN_USER_FILE: /run/secrets/omeka_admin_user
       OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
       OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
-      OMEKA_ADMIN_TEMP_EMAIL_FILE: /run/secrets/omeka_admin_temp_email
+      OMEKA_ADMIN_TEMP_EMAIL_FILE: /run/secrets/omeka_build_admin_email
     ports:
       - '127.0.0.1:8080:80'
     networks:
       - omeka-s-network
+    command: /docker-entrypoint.sh
     restart: unless-stopped
 
   omeka-s-db:
@@ -95,5 +95,5 @@ secrets:
     file: secrets/omeka_admin_email.txt
   omeka_admin_password:
     file: secrets/omeka_admin_password.txt
-  omeka_admin_temp_email:
+  omeka_build_admin_email:
     file: secrets/build/omeka_admin_email.txt

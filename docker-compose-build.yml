@@ -7,7 +7,6 @@ services:
       context: omeka-s
       target: builder
       dockerfile: Dockerfile
-    command: /build-entrypoint.sh
     depends_on:
       omeka-s-db:
         condition: service_healthy
@@ -16,36 +15,37 @@ services:
       - ./db-init:/db-init
       - ./omeka-s/assets/php-init:/php-init
     secrets:
-      - mariadb_password
-      - omeka_admin_user
-      - omeka_admin_email
-      - omeka_admin_password
+      - mariadb_build_password
+      - omeka_build_admin_user
+      - omeka_build_admin_email
+      - omeka_build_admin_password
     environment:
-      OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
-      OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
-      OMEKA_ADMIN_USER_FILE: /run/secrets/omeka_admin_user
+      OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka__build_admin_email
+      OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_build_admin_password
+      OMEKA_ADMIN_USER_FILE: /run/secrets/omeka_build_admin_user
       MARIADB_DATABASE: omekas
       MARIADB_USER: omekas
-      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_password
+      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_build_password
       MARIADB_HOST: omeka-s-db
       MARIADB_PORT: 3306
     ports:
       - '127.0.0.1:8080:80'
     networks:
       - omeka-s-network
+    command: /build-entrypoint.sh
 
   omeka-s-db:
     image: mariadb:12.2.1-noble-rc
     volumes:
       - omeka-s-db:/var/lib/mysql
     secrets:
-      - mariadb_password
-      - mariadb_root_password
+      - mariadb_build_password
+      - mariadb_build_root_password
     environment:
       MARIADB_DATABASE: omekas
       MARIADB_USER: omekas
-      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_password
-      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
+      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_build_password
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_build_root_password
     networks:
       - omeka-s-network
     restart: unless-stopped
@@ -64,13 +64,13 @@ volumes:
   omeka-s-app:
 
 secrets:
-  mariadb_password:
+  mariadb_build_password:
     file: secrets/build/mariadb_password.txt
-  mariadb_root_password:
+  mariadb_build_root_password:
     file: secrets/build/mariadb_root_password.txt
-  omeka_admin_user:
+  omeka_build_admin_user:
     file: secrets/build/omeka_admin_user.txt
-  omeka_admin_email:
+  omeka_build_admin_email:
     file: secrets/build/omeka_admin_email.txt
-  omeka_admin_password:
+  omeka_build_admin_password:
     file: secrets/build/omeka_admin_password.txt
