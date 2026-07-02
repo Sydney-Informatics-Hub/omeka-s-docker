@@ -12,12 +12,12 @@
     "email": "${OMEKA_ADMIN_EMAIL}",
     "password": "${OMEKA_ADMIN_PASSWORD}"
   },
-  "title": "My Omeka S Site",
+  "title": "Omeka S Build",
   "timezone": "Australia/Sydney",
   "site": {
-    "title": "My Omeka S Site",
-    "slug": "my-omeka-s-site",
-    "summary": "A brief summary of my Omeka S site.",
+    "title": "Temp Site",
+    "slug": "${OMEKA_SITE_SLUG}",
+    "summary": "",
     "theme": "default"
   }
 }

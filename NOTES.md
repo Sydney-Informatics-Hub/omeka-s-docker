@@ -34,7 +34,9 @@ with Omeka, just have to test it
 database initialisation file. I need to sort out how to update it, or
 replace it with a new value, at deployment time.
 
+## July 2
 
+Claude wrote a cli-tool to reset the admin user - testing this now
 
 
 

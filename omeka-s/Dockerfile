@@ -61,10 +61,11 @@ RUN chmod +x /docker-entrypoint.sh
 COPY assets/php-init /var/www/html
 
 # this is so that we can inject the database password at
-# deployment - see the docker-compose.yml 
+# deployment - see the docker-compose.yml
 
 COPY database.ini.tpl /var/www/html/public/config/database.ini.tpl
 COPY reset-admin.php /var/www/html/public/reset-admin.php
+COPY reset-settings.php /var/www/html/public/reset-settings.php
 
 RUN chown -R www-data:www-data /var/www/html
 

@@ -8,11 +8,14 @@ set -ex pipefail
 cd /var/www/html
 
 # build time values, which will get overwritten at deployment
+# the build values of OMEKA_ADMIN_EMAIL and OMEKA_SITE_SLUG are
+# used at deployment to look up the user and site to replace
 
-export MARIADB_PASSWORD=$(</run/secrets/mariadb_password)
-export OMEKA_ADMIN_USER=$(</run/secrets/omeka_admin_user)
-export OMEKA_ADMIN_EMAIL=$(</run/secrets/omeka_admin_email)
-export OMEKA_ADMIN_PASSWORD=$(</run/secrets/omeka_admin_password)
+export MARIADB_PASSWORD=$(</run/secrets/mariadb_build_password)
+export OMEKA_ADMIN_USER=$(</run/secrets/omeka_build_admin_user)
+export OMEKA_ADMIN_EMAIL=$(</run/secrets/omeka_build_admin_email)
+export OMEKA_ADMIN_PASSWORD=$(</run/secrets/omeka_build_admin_password)
+export OMEKA_SITE_SLUG=$(</run/secrets/omeka_build_site_slug)
 
 envsubst < /var/www/html/config/config.tpl > /var/www/html/config/config.json
 

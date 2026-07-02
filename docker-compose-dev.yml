@@ -35,16 +35,15 @@ services:
       - omeka_admin_email
       - omeka_admin_password
       - omeka_build_admin_email
+      - omeka_project_title
+      - omeka_site_title
+      - omeka_site_slug
+      - omeka_build_site_slug
     environment:
       MARIADB_DATABASE: omekas
       MARIADB_USER: omekas
       MARIADB_HOST: omeka-s-db
       MARIADB_PORT: 3306
-      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_password
-      OMEKA_ADMIN_USER_FILE: /run/secrets/omeka_admin_user
-      OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
-      OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
-      OMEKA_ADMIN_TEMP_EMAIL_FILE: /run/secrets/omeka_build_admin_email
     ports:
       - '127.0.0.1:8080:80'
     networks:
@@ -95,5 +94,14 @@ secrets:
     file: secrets/omeka_admin_email.txt
   omeka_admin_password:
     file: secrets/omeka_admin_password.txt
+  omeka_project_title:
+    file: secrets/omeka_project_title.txt
   omeka_build_admin_email:
     file: secrets/build/omeka_admin_email.txt
+  omeka_site_title:
+    file: secrets/omeka_site_title.txt
+  omeka_site_slug:
+    file: secrets/omeka_site_slug.txt
+  omeka_build_site_slug:
+    file: secrets/build/omeka_site_slug.txt
+
