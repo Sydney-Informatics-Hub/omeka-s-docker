@@ -58,15 +58,13 @@ services:
       - omeka-s-db:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d
     secrets:
-      - db_database
-      - db_user
-      - db_password
-      - db_root_password
+      - mariadb_password
+      - mariadb_root_password
     environment:
       MARIADB_DATABASE: omekas
       MARIADB_USER: omekas
-      MARIADB_PASSWORD_FILE: /run/secrets/db_password
-      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_password
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
     networks:
       - omeka-s-network
     restart: unless-stopped
