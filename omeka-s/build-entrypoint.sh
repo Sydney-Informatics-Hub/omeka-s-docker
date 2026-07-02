@@ -7,11 +7,9 @@ set -ex pipefail
 
 cd /var/www/html
 
-# these are the values at build time - this also happens in the runtime entrypoint
+# build time values, which will get overwritten at deployment
 
-export MARIADB_DATABASE=$(</run/secrets/db_database)
-export MARIADB_USER=$(</run/secrets/db_user)
-export MARIADB_PASSWORD=$(</run/secrets/db_password)
+export MARIADB_PASSWORD=$(</run/secrets/mariadb_password)
 export OMEKA_ADMIN_USER=$(</run/secrets/omeka_admin_user)
 export OMEKA_ADMIN_EMAIL=$(</run/secrets/omeka_admin_email)
 export OMEKA_ADMIN_PASSWORD=$(</run/secrets/omeka_admin_password)

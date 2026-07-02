@@ -34,21 +34,18 @@ services:
       - omeka_admin_user
       - omeka_admin_email
       - omeka_admin_password
-    entrypoint: [ "sh", "-c" ]
-    command:
-      - |
-        export MARIADB_PASSWORD="$(cat /run/secrets/mariadb_password)"
-        export OMEKA_ADMIN_USER="$(cat /run/secrets/omeka_admin_user)"
-        export OMEKA_ADMIN_EMAIL="$(cat /run/secrets/omeka_admin_email)"
-        export OMEKA_ADMIN_PASSWORD="$(cat /run/secrets/omeka_admin_password)"
-        envsubst < /var/www/html/config/config.tpl > /var/www/html/config/config.json
-        envsubst < /var/www/html/public/config/database.ini.tpl > /var/www/html/public/config/database.ini
-        exec docker-php-entrypoint apache2-foreground
+      - omeka_admin_temp_email
+    command: /docker-entrypoint.sh
     environment:
       MARIADB_DATABASE: omekas
       MARIADB_USER: omekas
       MARIADB_HOST: omeka-s-db
       MARIADB_PORT: 3306
+      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_password
+      OMEKA_ADMIN_USER_FILE: /run/secrets/omeka_admin_user
+      OMEKA_ADMIN_EMAIL_FILE: /run/secrets/omeka_admin_email
+      OMEKA_ADMIN_PASSWORD_FILE: /run/secrets/omeka_admin_password
+      OMEKA_ADMIN_TEMP_EMAIL_FILE: /run/secrets/omeka_admin_temp_email
     ports:
       - '127.0.0.1:8080:80'
     networks:
@@ -98,3 +95,5 @@ secrets:
     file: secrets/omeka_admin_email.txt
   omeka_admin_password:
     file: secrets/omeka_admin_password.txt
+  omeka_admin_temp_email:
+    file: secrets/build/omeka_admin_email.txt

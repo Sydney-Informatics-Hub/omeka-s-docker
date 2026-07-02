@@ -45,12 +45,14 @@ COPY config.json $INSTALL_DIR/config/config.json
 # entrypoint is configured in the docker-compose-build.yml
 
 COPY build-entrypoint.sh /build-entrypoint.sh
-
 RUN chmod +x /build-entrypoint.sh
 
 CMD [ "apache-foreground" ]
 
 FROM omeka-s-deps AS main
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # this is copied from the context, as it contains a bunch of
 # things like modules which were created at run time by
@@ -62,6 +64,7 @@ COPY assets/php-init /var/www/html
 # deployment - see the docker-compose.yml 
 
 COPY database.ini.tpl /var/www/html/public/config/database.ini.tpl
+COPY reset-admin.php /var/www/html/public/reset-admin.php
 
 RUN chown -R www-data:www-data /var/www/html
 
