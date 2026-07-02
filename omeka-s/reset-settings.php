@@ -109,8 +109,7 @@ if (!empty($options['site-title']) || !empty($options['site-slug']) || !empty($o
     }
     $entityManager->flush();
 
-    $settings->set('default_site', $site->getId());
-    echo "Site #{$site->getId()} is now titled '{$site->getTitle()}' (slug: {$site->getSlug()}) and set as default_site.\n";
+    echo "Site #{$site->getId()} is now titled '{$site->getTitle()}' (slug: {$site->getSlug()}).\n";
 }
 
 echo "Done.\n";
