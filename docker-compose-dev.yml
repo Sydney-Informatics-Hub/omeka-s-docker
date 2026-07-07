@@ -55,7 +55,7 @@ services:
     image: mariadb:12.2.1-noble-rc
     volumes:
       - omeka-s-db:/var/lib/mysql
-      - ./db-init:/docker-entrypoint-initdb.d
+      - ./init-db:/docker-entrypoint-initdb.d
     secrets:
       - mariadb_password
       - mariadb_root_password

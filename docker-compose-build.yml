@@ -12,7 +12,7 @@ services:
         condition: service_healthy
     volumes:
       - omeka-s-app:/var/www/html
-      - ./db-init:/db-init
+      - ./init-db:/init-db
       - ./omeka-s/assets/php-init:/php-init
     secrets:
       - mariadb_build_password
