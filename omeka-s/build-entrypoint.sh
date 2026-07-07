@@ -24,7 +24,7 @@ php console install -y
 
 # dump the database so that it can be picked up by the prod docker
 
-mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /db-init/init-db.sql
+mariadb-dump --host $MARIADB_HOST --user $MARIADB_USER -p$MARIADB_PASSWORD --all-databases > /init-db/init-db.sql
 
 # copy the complete /var/www/html so that it can also be included
 # in the production docker, cleaning out /php-init/ first
