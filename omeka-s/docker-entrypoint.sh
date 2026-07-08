@@ -30,14 +30,14 @@ cd /var/www/html/public
 # this won't do anything if the site admin user email exists
 
 php reset-admin.php \
-    --find-by-email=$OMEKA_BUILD_ADMIN_EMAIL \
-    --name=$OMEKA_ADMIN_USER \
-    --email=$OMEKA_ADMIN_EMAIL \
-    --password=$OMEKA_ADMIN_PASSWORD
+    --find-by-email="$OMEKA_BUILD_ADMIN_EMAIL" \
+    --name="$OMEKA_ADMIN_USER" \
+    --email="$OMEKA_ADMIN_EMAIL" \
+    --password="$OMEKA_ADMIN_PASSWORD"
 
 php reset-settings.php \
     --installation-title="$OMEKA_PROJECT_TITLE" \
-    --administrator-email=$OMEKA_ADMIN_EMAIL \
+    --administrator-email="$OMEKA_ADMIN_EMAIL" \
     --site-title="$OMEKA_SITE_TITLE" \
     --site-slug="$OMEKA_SITE_SLUG" \
     --find-site-by-slug="$OMEKA_BUILD_SITE_SLUG"
