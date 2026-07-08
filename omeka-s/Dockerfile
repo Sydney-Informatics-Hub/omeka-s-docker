@@ -27,7 +27,7 @@ RUN apt update \
 # to spin up a database and omeka, install the distribution modules,
 # install the vocabularies and resource templates, and then dump
 # the database SQL and the complete PHP app to disk
- 
+
 FROM omeka-s-deps AS builder
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
@@ -62,6 +62,15 @@ RUN chmod +x /build-entrypoint.sh
 
 CMD [ "apache-foreground" ]
 
+#####################################################################
+# main is the build stage which produces the image for final
+# deployment. It starts from omeka-s-deps so that it gets the
+# dependencies required by all stages and copies the PHP app which
+# has all of the modules into /var/www/html . Initialising the database
+# from the SQL dump in this version is handled by the
+# docker-compose-dev.yml script
+
+FROM omeka-s-deps AS main
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh

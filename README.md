@@ -27,11 +27,15 @@ The second build stage copies the web server state into a production
 Docker image, which has a complete Omeka S web hierachy including the
 installed modules.
 
-There are two deployment docker-compose files - one for dev and one for
-production. Both of these run the Docker image and will initialise the
-database from the SQL dump generated in the first build stage. The
-difference between the dev and production docker compose stacks is that
-production does full Caddy TLS termination. The dev version uses a
+There are three docker-compose files:
+
+- docker-compose-dev.yml is for building and running the stack on your laptop, if it's a Mac
+- docker-compose-linux.yml is for building the images to be pushed to the Nectar container registry
+- docker-compose.yml is the basis for the template used to deploy on Nectar
+
+The main difference with the production docker-compose.yml is that it
+pulls the omeka s app and the database from the Nectar container registry,
+and it does full TLS termination with Caddy. The dev version uses a
 self-signed certificate to run the server on https://omeka-s.localhost/
 
 ### The docker compose files 
@@ -61,59 +65,40 @@ A short summary of how to build a dev environment:
 ```
 
 Because the dev compose uses a self-signed cert, your browser will
-complain/warn that you're doing something scary  and ask you to make
-an exception.
+complain/warn that you're doing something scary and ask you to make
+an exception - this is fine.
 
-### TODO
+## Passwords and other secrets
 
-This build process still bakes in an admin user and password set by
-environment variables. We need to figure out a way to inject a new
-set of admin credentions when deploying a database for the first time.
+The dev docker-compose files expect the following secrets:
 
-## Environment variables
+    secrets/mariadb_password.txt
+    secrets/mariadb_root_password.txt
+    secrets/omeka_admin_email.txt
+    secrets/omeka_admin_password.txt
+    secrets/omeka_admin_user.txt
+    secrets/omeka_project_title.txt
+    secrets/omeka_site_slug.txt
+    secrets/omeka_site_title.txt
 
-The following environment variables are used by all versions of the
-docker compose file
+The docker-compose-build file expects build versions:
 
-    DB_DATABASE
-    DB_USER
-    DB_PASSWORD
-    DB_ROOT_PASSWORD
-    OMEKA_ADMIN_USER
-    OMEKA_ADMIN_EMAIL
-    OMEKA_ADMIN_PASSWORD
+    secrets/build/mariadb_password.txt
+    secrets/build/mariadb_root_passsword.txt
+    secrets/build/omeka_admin_password.txt
+    secrets/build/omeka_admin_user.txt
+    secrets/build/omeka_project_title.txt
+    secrets/build/omeka_site_slug.txt
+    secrets/build/omeka_site_title.txt
 
-Set the values you want in a `.env` file or pass them through as flags to
-docker compose.
+The secrets should not have a newline - you can create them using echo with the -n flag like:
 
-### Live TLS
+    echo -n "rand0mstuff" > mariadb_password.txt
 
-The prod version also requires
+### Production deployment
 
-    OMEKA_DOMAIN_NAME
-    OMEKA_TLS_EMAIL
+Production deployment is now done with Terraform, which now sets up the
+networking and DNS record, mints random passwords for the database and
+admin user, and uses cloud-init to put the docker-compose, Caddyfile and
+secrets on the new server. See https://github.com/Sydney-Informatics-Hub/curated-collections-terraform  for more details.
 
-The first of these is your server's fully qualified domain name, the
-second is the email address used in the Let's Encrypt challenge process,
-and should probably be yours.
-
-Note that the prod version will only work if the server you are installing
-it on already has OMEKA_DOMAIN_NAME pointing to it in DNS, and that the
-TLS keys are installed by Caddy on the first page load, not at the Docker
-build or run stage - so the first load can be a bit slow. You should also
-avoid rerunning this process too often or you'll get rate limited by
-Let's Encrypt. Caddy keeps the TLS keys in its own Docker volume,
-`caddy-data`, and will do updates automatically.
-
-Building and running is the same as for dev, assuming that the first
-build stage was already run on this machine
-
-```
-
-> docker compose -f docker-compose.yml build
-> docker compose -f docker-compose.yml up
-
-```
-
-TODO - for production deployment we should have the prebaked image
-on the Nectar container registry
