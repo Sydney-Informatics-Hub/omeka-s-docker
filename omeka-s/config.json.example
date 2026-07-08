@@ -1,0 +1,23 @@
+{
+  "db": {
+    "host": "omeka-s-db",
+    "port": 3306,
+    "username": "omekas",
+    "password": "PASSWORD",
+    "database": "omekas"
+  },
+  "apache_user": "www-data",
+  "admin": {
+    "name": "Mike Lynch",
+    "email": "m.lynch@sydney.edu.au",
+    "password": "ADMIN_PASSWORD"
+  },
+  "title": "My Omeka S Site",
+  "timezone": "Australia/Sydney",
+  "site": {
+    "title": "My Omeka S Site",
+    "slug": "my-omeka-s-site",
+    "summary": "A brief summary of my Omeka S site.",
+    "theme": "default"
+  }
+}
