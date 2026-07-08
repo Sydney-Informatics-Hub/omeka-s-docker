@@ -1,3 +1,4 @@
 .env
-omeka-s/php-init/
+omeka-s/assets/
 db-init/
+secrets/

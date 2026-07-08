@@ -1,6 +1,48 @@
 # NOTES
 
-First version:
+## June-July - secret injection
+
+This is a bit complicated, but here's what's happening on this branch:
+
+1. Only using Docker secrets for things which change (not the database
+user or db, just passwords and the admin account details)
+
+2. dev and prod docker compose now keep secrets in files, not environment,
+because that's how we'll be injecting them with cloud-inint on Nectar
+
+3. The pre-build uses its own db password in the environment, and this is
+ok, because when we deploy we can use a new one-off one
+
+BUT the php Docker image can't get secrets from BLAH_FILE environment
+variables, so now the docker-compose reads the files with cat into
+variables and runs envsubst on config.json and database.ini
+
+It doesn't need to do both - this is messy, the Systemik install script
+reads values from config.json and uses them to write database.ini. My
+deployment rewrites both of them with *this instance's* database password.
+
+I still need to make the prod docker compose do this, and get the secrets
+into that using Terraform
+
+What's also left:
+
+- need to check that the root database password is being reset with
+the new value, as well as the regular one. This doesn't require fiddling
+with Omeka, just have to test it
+
+- The admin account is still being created at build and written into the
+database initialisation file. I need to sort out how to update it, or
+replace it with a new value, at deployment time.
+
+## July 2
+
+Claude wrote a cli-tool to reset the admin user - testing this now
+
+
+
+
+
+## First version:
 
 Run the install script as part of the docker-entrypoint, because it
 needs the database container to be running.
@@ -73,3 +115,4 @@ What has to happen at init
 - init with database SQL
 - inject new password for admin user (before or after SQL init)?
 - spin up image
+

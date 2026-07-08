@@ -18,6 +18,10 @@ RUN apt update && apt install -y --no-install-recommends imagemagick
 
 RUN install-php-extensions imagick intl pdo_mysql zip
 
+RUN apt update \
+    && apt install -y --no-install-recommends \
+       imagemagick gettext-base
+
 #####################################################################
 # builder is a build stage which is used by the docker-compose-build.yml
 # to spin up a database and omeka, install the distribution modules,
@@ -28,12 +32,12 @@ FROM omeka-s-deps AS builder
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-ARG OMEKA_DIST_URL=https://github.com/Sydney-Informatics-Hub/ngc-omeka
-ARG OMEKA_DIST_BRANCH=feature-single-sign-on
-ARG INSTALL_DIR=/var/www/html
+RUN apt install -y --no-install-recommends \
+     git mariadb-client
 
-RUN apt update && apt install -y --no-install-recommends \
-    git gettext-base mariadb-client
+ARG OMEKA_DIST_URL=https://github.com/Sydney-Informatics-Hub/ngc-omeka
+ARG OMEKA_DIST_BRANCH=rc-sih-0.1.2
+ARG INSTALL_DIR=/var/www/html
 
 RUN mkdir -p $INSTALL_DIR
 
@@ -45,11 +49,7 @@ RUN composer install
 
 RUN mkdir -p $INSTALL_DIR/config
 
-#FIX ME - use build secrets to interpolate stuff here
-# but does it even need them ?
-
 COPY config.tpl $INSTALL_DIR/config/config.tpl
-
 COPY config.json $INSTALL_DIR/config/config.json
 
 # build-entrypoint.sh does the install which requires the server
@@ -58,23 +58,26 @@ COPY config.json $INSTALL_DIR/config/config.json
 # It also dumps out the database and copies the PHP app to the host
 
 COPY build-entrypoint.sh /build-entrypoint.sh
-
 RUN chmod +x /build-entrypoint.sh
 
 CMD [ "apache-foreground" ]
 
 
-#####################################################################
-# main is the build stage which produces the image for final
-# deployment. It starts from omeka-s-deps so that it gets the
-# dependencies required by all stages and copies the PHP app which
-# has all of the modules into /var/www/html . Initialising the database
-# from the SQL dump in this version is handled by the
-# docker-compose-dev.yml script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-FROM omeka-s-deps AS main
+# this is copied from the context, as it contains a bunch of
+# things like modules which were created at run time by
+# build_entrypoint.sh
 
-COPY php-init /var/www/html
+COPY assets/php-init /var/www/html
+
+# this is so that we can inject the database password at
+# deployment - see the docker-compose.yml
+
+COPY database.ini.tpl /var/www/html/public/config/database.ini.tpl
+COPY reset-admin.php /var/www/html/public/reset-admin.php
+COPY reset-settings.php /var/www/html/public/reset-settings.php
 
 RUN chown -R www-data:www-data /var/www/html
 

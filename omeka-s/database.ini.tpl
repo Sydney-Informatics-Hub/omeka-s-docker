@@ -1,0 +1,5 @@
+host = "omeka-s-db"
+port = "3306"
+user = "omekas"
+password = "${MARIADB_PASSWORD}"
+dbname = "omekas"

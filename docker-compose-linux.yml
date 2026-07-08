@@ -1,4 +1,4 @@
-name: omeka-s-dev
+name: omeka-s-linux
 
 services:
   caddy:
@@ -24,6 +24,8 @@ services:
       context: omeka-s
       dockerfile: Dockerfile
       target: main
+      platforms:
+        - "linux/amd64"
     depends_on:
       omeka-s-db:
         condition: service_healthy
@@ -55,7 +57,8 @@ services:
     build:
       context: mariadb
       dockerfile: Dockerfile
-    image: mariadb:12.2.1-noble-rc
+      platforms:
+        - "linux/amd64"
     volumes:
       - omeka-s-db:/var/lib/mysql
     secrets:
