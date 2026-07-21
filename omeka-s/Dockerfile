@@ -50,7 +50,9 @@ RUN composer install
 RUN mkdir -p $INSTALL_DIR/config
 
 COPY config.tpl $INSTALL_DIR/config/config.tpl
-COPY config.json $INSTALL_DIR/config/config.json
+
+
+# COPY config.json $INSTALL_DIR/config/config.json
 
 # build-entrypoint.sh does the install which requires the server
 # and db to be running (modules and resource templates)
