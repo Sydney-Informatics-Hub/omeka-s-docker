@@ -19,7 +19,6 @@ export OMEKA_SITE_SLUG=$(</run/secrets/omeka_build_site_slug)
 
 envsubst < /var/www/html/config/config.tpl > /var/www/html/config/config.json
 
-
 php console install -y
 
 # dump the database so that it can be picked up by the prod docker
