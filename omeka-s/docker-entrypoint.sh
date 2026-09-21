@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # This is the deployment entrypoint which sets the instance-specific
-# database credentials and resets the local admin password if it
-# hasn't already been created
+# database credentials, resets the local admin password if it
+# hasn't already been created, and configures the OIDC connector
 
 set -ex pipefail
 
@@ -19,6 +19,13 @@ export OMEKA_PROJECT_TITLE=$(</run/secrets/omeka_project_title)
 export OMEKA_SITE_TITLE=$(</run/secrets/omeka_site_title)
 export OMEKA_SITE_SLUG=$(</run/secrets/omeka_site_slug)
 export OMEKA_BUILD_SITE_SLUG=$(</run/secrets/omeka_build_site_slug)
+
+export OIDC_BASE_URL=$(</run/secrets/oidc_base_url)
+export OIDC_DISCOVERY_URL=$(</run/secrets/oidc_discovery_url)
+export OIDC_CLIENT_ID=$(</run/secrets/oidc_client_id)
+export OIDC_CLIENT_SECRET=$(</run/secrets/oidc_client_secret)
+export OIDC_ACCESS_CLAIM=$(</run/secrets/oidc_access_claim)
+export OIDC_ACCESS_VALUE=$(</run/secrets/oidc_access_value)
 
 # note: I don't think config.json is used after installation so
 # it should probably be cleaned up
@@ -41,6 +48,14 @@ php reset-settings.php \
     --site-title="$OMEKA_SITE_TITLE" \
     --site-slug="$OMEKA_SITE_SLUG" \
     --find-site-by-slug="$OMEKA_BUILD_SITE_SLUG"
+
+php set-oidc-config.php \
+    --base-url="$OMEKA_BASE_URL" \
+    --idp-discovery-url="$OIDC_DISCOVERY_URL" \
+    --client-id="$OIDC_CLIENT_ID" \
+    --client-secret="$OIDC_CLIENT_SECRET"\
+    --access-guard-claim="$OIDC_ACCESS_CLAIM" \
+    --access-guard-value="$OIDC_ACCESS_VALUE"
 
 exec docker-php-entrypoint apache2-foreground
 
