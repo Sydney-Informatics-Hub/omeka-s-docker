@@ -50,7 +50,7 @@ php reset-settings.php \
     --find-site-by-slug="$OMEKA_BUILD_SITE_SLUG"
 
 php set-oidc-config.php \
-    --base-url="$OMEKA_BASE_URL" \
+    --base-url="OIDC_BASE_URL" \
     --idp-discovery-url="$OIDC_DISCOVERY_URL" \
     --client-id="$OIDC_CLIENT_ID" \
     --client-secret="$OIDC_CLIENT_SECRET"\

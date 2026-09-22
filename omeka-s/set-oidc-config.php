@@ -21,41 +21,55 @@
 
 use Oidc\Settings as S;
 
+
 require __DIR__ . '/bootstrap.php';
+
+$options = getopt('', [
+    'base-url::',
+    'idp-discovery-url::',
+    'client-id::',
+    'client-secret::',
+    'access-guard-claim::',
+    'access-guard-value::',
+]);
 
 // Application::init() builds and bootstraps the service container without
 // dispatching an HTTP request (that only happens if you call ->run()).
+
 $app = \Omeka\Mvc\Application::init(
     require __DIR__ . '/application/config/application.config.php'
 );
 $services = $app->getServiceManager();
 
-// ---------------------------------------------------------------------
-// 2. The settings you want to change, keyed exactly as Oidc\Settings::KEYS
-//    expects them (i.e. the same shape ConfigForm::formDataToSettings()
-//    produces — check that class if you're not sure of a key name or the
-//    expected value type for a given field).
-// ---------------------------------------------------------------------
-$desiredSettings = [
-    S::BASE_URL           => 'https://sample.curated-collections.cloud.edu.au',
-    S::IDP_DISCOVERY_URL        => 'https://foo.bar.registry/oidc',
-    S::CLIENT_ID                => 'omeka-s-client-id',
-    S::CLIENT_SECRET            => 'seekritt',
-    S::ACCESS_GUARD_CLAIM      =>  'isMemberOf',
-    S::ACCESS_GUARD_VALUE      =>  'the_groop'
+// command-line options mapped to settings values
+
+$settingMap = [
+    'base-url'           => S::BASE_URL,
+    'idp-discovery-url'  => S::IDP_DISCOVERY_URL,
+    'client-id'          => S::CLIENT_ID,
+    'client-secret'      => S::CLIENT_SECRET,
+    'access-guard-claim' => S::ACCESS_GUARD_CLAIM,
+    'access-guard-value' => S::ACCESS_GUARD_VALUE,
 ];
 
-// ---------------------------------------------------------------------
-// 3. Merge with existing settings so keys you don't mention are preserved,
-//    matching what happens when you save the form with only some fields
-//    changed.
-// ---------------------------------------------------------------------
+// Make $targetSettings with the new values
+
+$targetSettings = [];
+
+foreach ($settingMap as $flag => $key) {
+    if (!empty($options[$flag])) {
+        $targetSettings[$key] = $options[$flag];
+    }
+}
+
 $settings = $services->get('Omeka\Settings');
 $current = [];
 foreach (\Oidc\Settings::KEYS as $key) {
     $current[$key] = $settings->get($key, \Oidc\Settings::DEFAULTS[$key] ?? null);
 }
-$data = array_merge($current, $desiredSettings);
+$data = array_merge($current, $targetSettings);
+
+
 
 // ---------------------------------------------------------------------
 // 4. Validate and apply, exactly as the config form does.
