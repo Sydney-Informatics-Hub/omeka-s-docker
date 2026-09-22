@@ -9,7 +9,7 @@ docker compose -f docker-compose-build.yml down \
 
 docker compose -f docker-compose-build.yml up \
 	--build \
-	--abort-on-container-exit \
+	--abort-on-container-exit 
 
 mv init-db/init-db.sql mariadb/
 
