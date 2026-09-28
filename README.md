@@ -1,7 +1,7 @@
 # Omeka-S Docker
 
-Docker and docker compose scaffolding for deploying the Curated Collections
-Omeka S distribution
+Docker and docker compose scaffolding for building a containerised
+version of the [Curated Collections Omeka S distribution](https://github.com/Sydney-Informatics-Hub/ngc-omeka)
 
 ## Installation
 
@@ -13,19 +13,17 @@ Installing the complete distribution has four stages:
 - installing the resource templates and vocabularies
 
 This process is complicated by the fact that Omeka S and the database
-have to be running for the third and fourth stages. One way to get
-around this is to have the last two stages run as part of the Docker
-entrypoint, which is how the first version of this worked. This isn't
-particularly good practice, and it means that we don't have a
-self-contained Docker image we can deploy quickly.
+have to be running for the third and fourth stages. 
 
-The current version uses a multi-stage build - spinning up a temporary
+This version uses a multi-stage build - spinning up a temporary
 version of the stack to do the install which requires a running db,
 and then dumping the database and web server state out as assets.
 
 The second build stage copies the web server state into a production
 Docker image, which has a complete Omeka S web hierachy including the
 installed modules.
+
+![A diagram illustrating the build process](doc/build-details.drawio.png)
 
 There are three docker-compose files:
 
@@ -97,8 +95,7 @@ The secrets should not have a newline - you can create them using echo with the 
 
 ### Production deployment
 
-Production deployment is now done with Terraform, which now sets up the
+Production deployment is now done with Terraform, which sets up the
 networking and DNS record, mints random passwords for the database and
-admin user, and uses cloud-init to put the docker-compose, Caddyfile and
-secrets on the new server. See https://github.com/Sydney-Informatics-Hub/curated-collections-terraform  for more details.
+admin user, and uses cloud-init to put the docker-compose, Caddyfile and secrets on the new server. See https://github.com/Sydney-Informatics-Hub/curated-collections-terraform  for more details.
 

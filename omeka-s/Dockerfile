@@ -35,13 +35,13 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN apt install -y --no-install-recommends \
      git mariadb-client
 
-ARG OMEKA_DIST_URL=https://github.com/Sydney-Informatics-Hub/ngc-omeka
-ARG OMEKA_DIST_BRANCH=rc-sih-0.1.2
+ARG OMEKA_DIST_URL=https://github.com/Systemik-Solutions/ngc-omeka
+ARG OMEKA_DIST_BRANCH=v1.3.0
 ARG INSTALL_DIR=/var/www/html
 
 RUN mkdir -p $INSTALL_DIR
 
-RUN git clone -b $OMEKA_DIST_BRANCH $OMEKA_DIST_URL $INSTALL_DIR
+RUN git clone --depth 1 --branch $OMEKA_DIST_BRANCH $OMEKA_DIST_URL $INSTALL_DIR
 
 WORKDIR $INSTALL_DIR
 
@@ -87,6 +87,6 @@ COPY assets/php-init /var/www/html
 COPY database.ini.tpl /var/www/html/public/config/database.ini.tpl
 COPY reset-admin.php /var/www/html/public/reset-admin.php
 COPY reset-settings.php /var/www/html/public/reset-settings.php
-
+COPY set-oidc-config.php /var/www/html/public/set-oidc-config.php
 RUN chown -R www-data:www-data /var/www/html
 

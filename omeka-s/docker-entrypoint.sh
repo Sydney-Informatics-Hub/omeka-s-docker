@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # This is the deployment entrypoint which sets the instance-specific
-# database credentials and resets the local admin password if it
-# hasn't already been created
+# database credentials, resets the local admin password if it
+# hasn't already been created, and configures the OIDC connector
 
 set -ex pipefail
 
@@ -41,6 +41,8 @@ php reset-settings.php \
     --site-title="$OMEKA_SITE_TITLE" \
     --site-slug="$OMEKA_SITE_SLUG" \
     --find-site-by-slug="$OMEKA_BUILD_SITE_SLUG"
+
+php set-oidc-config.php --config="/run/secrets/oidc_config"
 
 exec docker-php-entrypoint apache2-foreground
 
