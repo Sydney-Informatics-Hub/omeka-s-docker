@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+## v2.0.0
+
+Release v2 version
+
 ## v0.2.1 - July 2026
 
 Multi-stage build which installs modules and resource templates /

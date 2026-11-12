@@ -4,7 +4,7 @@ FROM composer:2.9.2 AS composer
 # omeka-s-deps is a build stage with dependencies used in both the
 # temporary build image and in the final deployment image
 
-FROM php:8.2-apache AS omeka-s-deps
+FROM php:8.2.35-apache AS omeka-s-deps
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
