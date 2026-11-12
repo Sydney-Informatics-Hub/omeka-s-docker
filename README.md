@@ -13,7 +13,7 @@ Installing the complete distribution has four stages:
 - installing the resource templates and vocabularies
 
 This process is complicated by the fact that Omeka S and the database
-have to be running for the third and fourth stages. 
+have to be running for the third and fourth stages.
 
 This version uses a multi-stage build - spinning up a temporary
 version of the stack to do the install which requires a running db,
@@ -47,6 +47,9 @@ docker compose in the right way so that it exits after the build.
 second build stage
 
 `docker-compose.yml` - the production version with TLS
+
+`docker-compose-linux.yml` - prod version which builds images for Linux to
+push to the container registry
 
 A short summary of how to build a dev environment:
 
@@ -95,7 +98,19 @@ The secrets should not have a newline - you can create them using echo with the 
 
 ### Production deployment
 
-FIXME - instructions for rebuilding the docker image and pushing to harbor
+The last step is to rebuild the docker images for linux, tag them and push them to the Nectar container registry:
+
+```
+> docker compose -f docker-compose-linux.yml build
+
+[ ...build process, again, this time for Linux ... ]
+
+> docker tag omeka-s-linux-omeka-s-db:latest registry.rc.nectar.org.au/curated-collections/cc-mariadb:v2.0.1
+> docker push registry.rc.nectar.org.au/curated-collections/cc-mariadb:v2.0.1
+
+> docker tag omeka-s-linux-omeka-s-app:latest registry.rc.nectar.org.au/curated-collections/cc-omeka-s:v2.0.1
+> docker push registry.rc.nectar.org.au/curated-collections/cc-omeka-s:v2.0.1
+```
 
 Production deployment is now done with Terraform, which sets up the
 networking and DNS record, mints random passwords for the database and
