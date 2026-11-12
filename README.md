@@ -95,6 +95,8 @@ The secrets should not have a newline - you can create them using echo with the 
 
 ### Production deployment
 
+FIXME - instructions for rebuilding the docker image and pushing to harbor
+
 Production deployment is now done with Terraform, which sets up the
 networking and DNS record, mints random passwords for the database and
 admin user, and uses cloud-init to put the docker-compose, Caddyfile and secrets on the new server. See https://github.com/Sydney-Informatics-Hub/curated-collections-terraform  for more details.
