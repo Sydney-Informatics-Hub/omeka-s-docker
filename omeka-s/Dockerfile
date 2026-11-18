@@ -35,8 +35,10 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN apt install -y --no-install-recommends \
      git mariadb-client
 
-ARG OMEKA_DIST_URL=https://github.com/Systemik-Solutions/ngc-omeka
-ARG OMEKA_DIST_BRANCH=v1.3.0
+# pointing this at an SIH branch with the item importer on it
+
+ARG OMEKA_DIST_URL=https://github.com/SydneyInformaticsHub/ngc-omeka
+ARG OMEKA_DIST_BRANCH=rc-1.3.1-sih-osii
 ARG INSTALL_DIR=/var/www/html
 
 RUN mkdir -p $INSTALL_DIR
